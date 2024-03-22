@@ -5,7 +5,27 @@ using namespace std;
 //youssef ====> menu + 1 filter from(1,4,7,10)
 //ahmed ====>  2 filter(2,5,8,11)
 //mohamed ====>  2 filter(3,6,9,12)
+// =======================================================================================
 
+void GrayscaleFilter(Image& picture)
+{
+    for(int i = 0 ; i < picture.width ; i++)
+    {
+        for(int j = 0 ; j < picture.height ; j++)
+        {
+            unsigned int average = 0;
+            for(int k = 0 ; k < 3 ; k++)
+            {
+                average += picture(i,j,k);
+            }
+            average /= 3;
+            picture(i,j,0) = average;
+            picture(i,j,1) = average;
+            picture(i,j,2) = average;
+        }
+
+    }
+}
 
 int main()
 {
@@ -17,6 +37,7 @@ int main()
         cin >> chooce;
         if(chooce == "Y" || chooce == "y" )
         {
+            string ask;
             string filename;
             string filterchooce;
             cout << "put your image name or path (with extension): ";
@@ -31,11 +52,24 @@ int main()
             cout << "I) Adding a frame to the picture       J) Detect image edges\n"<<endl;
             cout << "K) Resizing images                     L) Blur images\n"<<endl;
             cout <<"=============================================================================\n";
-            cout << "chooce any one do you apply: ";
+            cout << "chooce any one to apply: ";
             cin >> filterchooce;
             if(filterchooce == "A" || filterchooce == "a" )
             {
-                // make function do the filter and call it here 
+                cout << "do you want to save new image[Y/N]: ";
+                cin >> ask;
+                if(ask == "Y" || ask == "y")
+                {
+                    cout << "write your name of new image(don't forget extension): ";
+                    cin >> filename;
+                    GrayscaleFilter(picture);
+                    picture.saveImage(filename);
+
+                }
+                else{
+                    exit(EXIT_SUCCESS);
+                }
+                
 
             }
             else if(filterchooce == "B" || filterchooce == "b")
