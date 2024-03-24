@@ -27,6 +27,49 @@ void GrayscaleFilter(Image& picture)
     }
 }
 
+// black and white filter
+void black_and_whiteFilter(Image& photo){
+
+    // Convert to grayscale first
+    for (int i = 0; i < photo.width; ++i) {
+        for (int j = 0; j < photo.height; ++j) {
+            unsigned  int gray = 0; 
+
+            for (int k = 0; k < 3; ++k) {
+                gray += photo(i, j, k); 
+            }
+
+            gray /= 3; // Calculate average
+            for (int k = 0; k < 3; ++k) {
+                photo(i, j, k) = gray;
+            }
+        }
+    }
+
+    // Second convert to black and white
+    unsigned int Midpoint = 127; // Midpoint of 255 grayscale levels
+    for (int i = 0; i < photo.width; ++i) {
+        for (int j = 0; j < photo.height; ++j) {
+            unsigned int Pixel = photo(i, j, 0); 
+            if (Pixel > Midpoint) {
+                for (int k = 0; k < 3; ++k) {
+                    photo(i, j, k) = 255; // Set to white
+                }
+            } else {
+                for (int k = 0; k < 3; ++k) {
+                    photo(i, j, k) = 60; // Set to black
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
 int main()
 {
     while (true)
@@ -45,7 +88,7 @@ int main()
             Image picture(filename);
             cout << "***we have lots of filters to applay***" << endl;
             cout <<"=============================================================================\n";
-            cout << "A) Grayscale conversion                B) Blach and white\n"<<endl;
+            cout << "A) Grayscale conversion                B) Black and white\n"<<endl;
             cout << "C)Invert image                         D) Merge images\n"<<endl;
             cout << "E) Flip image                          F) Rotat image\n"<<endl;
             cout << "G) Darken and Lighten image            H) Crop images\n"<<endl;
@@ -74,8 +117,19 @@ int main()
             }
             else if(filterchooce == "B" || filterchooce == "b")
             {
-                // make function do the filter and call it here 
-                
+                cout << "do you want to save new image[Y/N]: ";
+                cin >> ask;
+                if(ask == "Y" || ask == "y")
+                {
+                    cout << "write your name of new image(don't forget extension): ";
+                    cin >> filename;
+                    black_and_whiteFilter(picture);
+                    picture.saveImage(filename);
+
+                }
+                else{
+                    exit(EXIT_SUCCESS);
+                }
             }
 
             else if(filterchooce == "C" || filterchooce == "c")
