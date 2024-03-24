@@ -57,7 +57,7 @@ void black_and_whiteFilter(Image& photo){
                 }
             } else {
                 for (int k = 0; k < 3; ++k) {
-                    photo(i, j, k) = 60; // Set to black
+                    photo(i, j, k) = 0; // Set to black
                 }
             }
         }
@@ -123,7 +123,7 @@ int main()
                 {
                     cout << "write your name of new image(don't forget extension): ";
                     cin >> filename;
-                    black_and_whiteFilter(picture);
+                    black_and_whiteFilter(photo);
                     picture.saveImage(filename);
 
                 }
