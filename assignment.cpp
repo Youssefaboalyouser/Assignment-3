@@ -78,6 +78,42 @@ void black_and_whiteFilter(Image& photo){
         }
     }
 }
+// resizing filter 
+void resizing(Image& photo){
+    int choice=0 , new_width=0, new_height=0;
+    float ratio=0.0;
+    cout<<"please select: 1)enter the new width and height     2)enter a ratio of reduction or increase ";
+    cin>>choice;
+    if (choice==1){
+        cout<<"please enter the new width and height:";
+        cin >> new_width >> new_height;
+    }else if(choice==2){
+        cout<<"please enter the resize ratio(e.g.,0.5 for half size):";
+        cin>>ratio;
+        new_width=static_cast<int>(photo.width * ratio);
+        new_height=static_cast<int>(photo.height * ratio);
+    }
+    // Create a new photo with the desired dimensions
+    Image new_photo(new_width, new_height);
+
+    // Calculate the scaling factors
+    float X_scale = static_cast<float>(photo.width) / new_width;
+    float Y_scale = static_cast<float>(photo.height) / new_height;
+
+    // Copy and scale the pixel data
+    for (int y = 0; y < new_height; ++y) {
+        for (int x = 0; x < new_width; ++x) {
+            int origX = static_cast<int>(x * X_scale);
+            int origY = static_cast<int>(y * Y_scale);
+
+            // Assuming the pixel data is stored in a 1D array and each pixel has 3 channels (RGB)
+            for (int c = 0; c < 3; ++c) {
+                new_photo.imageData[(y * new_width + x) * 3 + c] =
+                        photo.imageData[(origY * photo.width + origX) * 3 + c];
+            }
+        }
+    }
+}
 int main()
 {
     while (true)
