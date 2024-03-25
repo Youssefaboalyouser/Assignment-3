@@ -79,41 +79,29 @@ void black_and_whiteFilter(Image& photo){
     }
 }
 // resizing filter 
-void resizing(Image& photo){
-    int choice=0 , new_width=0, new_height=0;
-    float ratio=0.0;
-    cout<<"please select: 1)enter the new width and height     2)enter a ratio of reduction or increase ";
-    cin>>choice;
-    if (choice==1){
-        cout<<"please enter the new width and height:";
-        cin >> new_width >> new_height;
-    }else if(choice==2){
-        cout<<"please enter the resize ratio(e.g.,0.5 for half size):";
-        cin>>ratio;
-        new_width=static_cast<int>(photo.width * ratio);
-        new_height=static_cast<int>(photo.height * ratio);
-    }
-    // Create a new photo with the desired dimensions
-    Image new_photo(new_width, new_height);
+void resizing(Image &photo, int new_width, int new_height){
+
+
+    Image newImage(new_width, new_height);
 
     // Calculate the scaling factors
-    float X_scale = static_cast<float>(photo.width) / new_width;
-    float Y_scale = static_cast<float>(photo.height) / new_height;
+    float X_Scale = static_cast<float>(photo.width) / new_width;
+    float Y_Scale = static_cast<float>(photo.height) / new_height;
 
     // Copy and scale the pixel data
-    for (int y = 0; y < new_height; ++y) {
-        for (int x = 0; x < new_width; ++x) {
-            int origX = static_cast<int>(x * X_scale);
-            int origY = static_cast<int>(y * Y_scale);
-
+    for (int i = 0; i < new_height; ++i) {
+        for (int j = 0; j < new_width; ++j) {
+            int origX = static_cast<int>(j * X_Scale);
+            int origY = static_cast<int>(i * Y_Scale);
             // Assuming the pixel data is stored in a 1D array and each pixel has 3 channels (RGB)
-            for (int c = 0; c < 3; ++c) {
-                new_photo.imageData[(y * new_width + x) * 3 + c] =
-                        photo.imageData[(origY * photo.width + origX) * 3 + c];
+            for (int k = 0; k < 3; ++k) {
+                newImage.imageData[(i * new_width + j) * 3 + k] =
+                        photo.imageData[(origY * photo.width + origX) * 3 + k];
             }
         }
     }
 }
+
 int main()
 {
     while (true)
@@ -227,7 +215,15 @@ int main()
             }
             else if(filterchooce == "K" || filterchooce == "k")
             {
-                // make function do the filter and call it here 
+                int newWidth=0, newHeight=0;
+                cout << "write your name of new image(don't forget extension): ";
+                cin >> filename;
+                Image photo(filename);
+                cout << "Please enter the new width and height: ";
+                cin >> newWidth >> newHeight;
+                resizing(photo, newWidth, newHeight);
+                Image newImage(newWidth, newHeight);
+    .           newImage.saveImage(filename); 
             }
             else if(filterchooce == "L" || filterchooce == "l")
             {
