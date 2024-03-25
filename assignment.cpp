@@ -126,6 +126,7 @@ void black_and_whiteFilter(Image& photo){
         }
     }
 }
+<<<<<<< HEAD
 // resizing filter 
 void resizing(Image& photo,string ask){
     int new_width=0;
@@ -169,6 +170,26 @@ void resizing(Image& photo,string ask){
                     new_photo.imageData[(y * new_width + x) * 3 + c] =
                     photo.imageData[(origY * photo.width + origX) * 3 + c];
                 }
+=======
+void resizing(Image &photo, int new_width, int new_height){
+
+
+    Image newImage(new_width, new_height);
+
+    // Calculate the scaling factors
+    float X_Scale = static_cast<float>(photo.width) / new_width;
+    float Y_Scale = static_cast<float>(photo.height) / new_height;
+
+    // Copy and scale the pixel data
+    for (int i = 0; i < new_height; ++i) {
+        for (int j = 0; j < new_width; ++j) {
+            int origX = static_cast<int>(j * X_Scale);
+            int origY = static_cast<int>(i * Y_Scale);
+            // Assuming the pixel data is stored in a 1D array and each pixel has 3 channels (RGB)
+            for (int k = 0; k < 3; ++k) {
+                newImage.imageData[(i * new_width + j) * 3 + k] =
+                        photo.imageData[(origY * photo.width + origX) * 3 + k];
+>>>>>>> 7e4b587a3e50e87d19f4906bfa5f09cc17d0dbe7
             }
         }
         new_photo.saveImage(filename);
@@ -180,6 +201,7 @@ void resizing(Image& photo,string ask){
     
 
 }
+    
 int main()
 {
     while (true)                   // make infinite loop to use the programm
@@ -311,9 +333,21 @@ int main()
             }
             else if(filterchooce == "K" || filterchooce == "k")
             {
+<<<<<<< HEAD
                 cout << "do you want to save new image[Y/N]: ";
                 cin >> ask;
                 resizing(picture,ask);
+=======
+                int newWidth=0, newHeight=0;
+                cout << "write your name of new image(don't forget extension): ";
+                cin >> filename;
+                Image photo(filename);
+                cout << "Please enter the new width and height: ";
+                cin >> newWidth >> newHeight;
+                resizing(photo, newWidth, newHeight);
+                Image newImage(newWidth, newHeight);
+                newImage.saveImage(filename); 
+>>>>>>> 7e4b587a3e50e87d19f4906bfa5f09cc17d0dbe7
 
             }
             else if(filterchooce == "L" || filterchooce == "l")
