@@ -1,9 +1,5 @@
-#include"Image_Class.h"
-#include<iostream>
-using namespace std;
-string filename;
 // ================================================================================================================
-                                               // part 1 (5 filters + menu)
+// part 1 (5 filters + menu)
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // *** first member name: Youssef Aboalyouser Afeed Ibrahem
@@ -11,16 +7,11 @@ string filename;
 // work on: darken and lighten filter , Grayscale filter ***
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-
-
-
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // *** second member name: Ahemd Mahmoud Ibrahim Mahmoud
 // ID: 20230650
 // work on: black and white filter , resizing image filter ***
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // *** first member name: Mohamed Youssef Ishaq Abdel Hafeez
@@ -28,129 +19,170 @@ string filename;
 // work on: invert image filter , menu ***
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-
-
 // ================================================================================================================
+#include "Image_Class.h"
+#include <iostream>
+using namespace std;
+string filename;
+int main();
 
-
-void invert_image(Image& picture)
+void Flip_Horizontal(Image &photo)
 {
-    for(int i = 0 ; i < picture.width ; i++)
+    int width = photo.width;
+    for (int j = 0; j < photo.height; ++j)
     {
-        for(int j = 0 ; j < picture.height ; j++) //make nested loop to access every pixel in the photo
+        for (int i = 0; i < width / 2; ++i)
         {
-            //convert pright pexel to darker pixel and the invers is correct
-            //by subtract from maximum value
-            picture(i,j,0) = 255 - picture(i,j,0);
-            picture(i,j,1) = 255 - picture(i,j,1);
-            picture(i,j,2) = 255 - picture(i,j,2);
+            for (int k = 0; k < 3; ++k)
+            {
+                int temp = photo.imageData[(j * width + i) * 3 + k];
+                photo.imageData[(j * width + i) * 3 + k] = photo.imageData[(j * width + (width - 1 - i)) * 3 + k];
+                photo.imageData[(j * width + (width - 1 - i)) * 3 + k] = temp;
+            }
         }
     }
 }
 
-
-void darken_lighten_filter(Image& picture,string ver)
+void Flip_Vertical(Image &photo)
 {
-    if(ver == "i" || ver == "I")//darken version
+    int width = photo.width;
+    int height = photo.height;
+    for (int j = 0; j < height / 2; ++j)
     {
-        for(int i = 0 ; i < picture.width ; i++)
+        for (int i = 0; i < width; ++i)
         {
-            for(int j = 0 ; j < picture.height ; j++)
+            for (int k = 0; k < 3; ++k)
             {
-                // access every pixel and multiplay the value of rgb by 1/2 to make it darker
-                picture(i,j,0) *= 0.5f;
-                picture(i,j,1) *= 0.5f;
-                picture(i,j,2) *= 0.5f;
-
+                int temp = photo.imageData[(j * width + i) * 3 + k];
+                photo.imageData[(j * width + i) * 3 + k] = photo.imageData[((height - 1 - j) * width + i) * 3 + k];
+                photo.imageData[((height - 1 - j) * width + i) * 3 + k] = temp;
             }
         }
-
     }
-    else if(ver == "I" || ver == "II")//lighten version
+}
+
+void invert_image(Image &picture)
+{
+    for (int i = 0; i < picture.width; i++)
     {
-        for(int i = 0 ; i < picture.width ; i++)
+        for (int j = 0; j < picture.height; j++) // make nested loop to access every pixel in the photo
         {
-            for(int j = 0 ; j < picture.height ; j++)
+            // convert pright pexel to darker pixel and the invers is correct
+            // by subtract from maximum value
+            picture(i, j, 0) = 255 - picture(i, j, 0);
+            picture(i, j, 1) = 255 - picture(i, j, 1);
+            picture(i, j, 2) = 255 - picture(i, j, 2);
+        }
+    }
+}
+
+void darken_lighten_filter(Image &picture, string ver)
+{
+    if (ver == "i" || ver == "I") // darken version
+    {
+        for (int i = 0; i < picture.width; i++)
+        {
+            for (int j = 0; j < picture.height; j++)
+            {
+                // access every pixel and multiplay the value of rgb by 1/2 to make it darker
+                picture(i, j, 0) *= 0.5f;
+                picture(i, j, 1) *= 0.5f;
+                picture(i, j, 2) *= 0.5f;
+            }
+        }
+    }
+    else if (ver == "I" || ver == "II") // lighten version
+    {
+        for (int i = 0; i < picture.width; i++)
+        {
+            for (int j = 0; j < picture.height; j++)
             {
 
                 // access every pixel and multiplay the value of rgb by 1.5 to make it lighter
-                picture(i,j,0) *= 1.5f;
-                picture(i,j,1) *= 1.5f;
-                picture(i,j,2) *= 1.5f;
-
+                picture(i, j, 0) *= 1.5f;
+                picture(i, j, 1) *= 1.5f;
+                picture(i, j, 2) *= 1.5f;
             }
         }
-
     }
-
 }
 
-
-void GrayscaleFilter(Image& picture)
+void GrayscaleFilter(Image &picture)
 {
-    for(int i = 0 ; i < picture.width ; i++)
+    for (int i = 0; i < picture.width; i++)
     {
-        for(int j = 0 ; j < picture.height ; j++)
+        for (int j = 0; j < picture.height; j++)
         {
-            //access to all pixel and calculte the average or rgb value
+            // access to all pixel and calculte the average or rgb value
             unsigned int average = 0;
-            for(int k = 0 ; k < 3 ; k++)
+            for (int k = 0; k < 3; k++)
             {
-                average += picture(i,j,k);
+                average += picture(i, j, k);
             }
             average /= 3;
-            //applay the average of rgb to all pixel to rech grayscale look
-            picture(i,j,0) = average;
-            picture(i,j,1) = average;
-            picture(i,j,2) = average;
+            // applay the average of rgb to all pixel to rech grayscale look
+            picture(i, j, 0) = average;
+            picture(i, j, 1) = average;
+            picture(i, j, 2) = average;
         }
     }
 }
 // black and white filter
-void black_and_whiteFilter(Image& photo){
+void black_and_whiteFilter(Image &photo)
+{
     // convert to black and white
     unsigned int Midpoint = 127; // Midpoint of 255 grayscale levels
-    for (int i = 0; i < photo.width; ++i) {
-        for (int j = 0; j < photo.height; ++j) {
-            unsigned int Pixel = photo(i, j, 0); 
-            if (Pixel > Midpoint) {
-                for (int k = 0; k < 3; ++k) {
+    for (int i = 0; i < photo.width; ++i)
+    {
+        for (int j = 0; j < photo.height; ++j)
+        {
+            unsigned int Pixel = photo(i, j, 0);
+            if (Pixel > Midpoint)
+            {
+                for (int k = 0; k < 3; ++k)
+                {
                     photo(i, j, k) = 255; // Set to white
                 }
-            } else {
-                for (int k = 0; k < 3; ++k) {
+            }
+            else
+            {
+                for (int k = 0; k < 3; ++k)
+                {
                     photo(i, j, k) = 60; // Set to black
-                    photo(i, j, k) = 0; // Set to black
+                    photo(i, j, k) = 0;  // Set to black
                 }
             }
         }
     }
 }
-<<<<<<< HEAD
-// resizing filter 
-void resizing(Image& photo,string ask){
-    int new_width=0;
-    int new_height=0;
+// resizing filter
+void resizing(Image &photo, string ask)
+{
+    int new_width = 0;
+    int new_height = 0;
     string choice;
-    float ratio=0.0;
-    if(ask == "y" || ask == "Y")
+    float ratio = 0.0;
+    if (ask == "y" || ask == "Y")
     {
         cout << "write your name of new image(don't forget extension): ";
         cin >> filename;
 
-        cout<<"please select: A)enter the new width and height     Z)enter a ratio of reduction or increase " << endl;
+        cout << "please select: A)enter the new width and height     Z)enter a ratio of reduction or increase " << endl;
         cout << ": ";
-        cin>>choice;
-        if (choice=="A" || choice == "a"){
-            cout<<"please enter the new width: ";
+        cin >> choice;
+        if (choice == "A" || choice == "a")
+        {
+            cout << "please enter the new width: ";
             cin >> new_width;
-            cout<<"please enter the new height: ";
-            cin>> new_height;
-        }else if(choice=="z" || choice == "Z"){
-            cout<<"please enter the resize ratio(e.g.,0.5 for half size):";
-            cin>>ratio;
-            new_width=static_cast<int>(photo.width * ratio);
-            new_height=static_cast<int>(photo.height * ratio);
+            cout << "please enter the new height: ";
+            cin >> new_height;
+        }
+        else if (choice == "z" || choice == "Z")
+        {
+            cout << "please enter the resize ratio(e.g.,0.5 for half size):";
+            cin >> ratio;
+            new_width = static_cast<int>(photo.width * ratio);
+            new_height = static_cast<int>(photo.height * ratio);
         }
         // Create a new photo with the desired dimensions
         Image new_photo(new_width, new_height);
@@ -160,213 +192,230 @@ void resizing(Image& photo,string ask){
         float Y_scale = static_cast<float>(photo.height) / new_height;
 
         // Copy and scale the pixel data
-        for (int y = 0; y < new_height; ++y) {
-            for (int x = 0; x < new_width; ++x) {
+        for (int y = 0; y < new_height; ++y)
+        {
+            for (int x = 0; x < new_width; ++x)
+            {
                 int origX = static_cast<int>(x * X_scale);
                 int origY = static_cast<int>(y * Y_scale);
 
                 // Assuming the pixel data is stored in a 1D array and each pixel has 3 channels (RGB)
-                for (int c = 0; c < 3; ++c) {
+                for (int c = 0; c < 3; ++c)
+                {
                     new_photo.imageData[(y * new_width + x) * 3 + c] =
-                    photo.imageData[(origY * photo.width + origX) * 3 + c];
+                        photo.imageData[(origY * photo.width + origX) * 3 + c];
                 }
-=======
-void resizing(Image &photo, int new_width, int new_height){
-
-
-    Image newImage(new_width, new_height);
-
-    // Calculate the scaling factors
-    float X_Scale = static_cast<float>(photo.width) / new_width;
-    float Y_Scale = static_cast<float>(photo.height) / new_height;
-
-    // Copy and scale the pixel data
-    for (int i = 0; i < new_height; ++i) {
-        for (int j = 0; j < new_width; ++j) {
-            int origX = static_cast<int>(j * X_Scale);
-            int origY = static_cast<int>(i * Y_Scale);
-            // Assuming the pixel data is stored in a 1D array and each pixel has 3 channels (RGB)
-            for (int k = 0; k < 3; ++k) {
-                newImage.imageData[(i * new_width + j) * 3 + k] =
-                        photo.imageData[(origY * photo.width + origX) * 3 + k];
->>>>>>> 7e4b587a3e50e87d19f4906bfa5f09cc17d0dbe7
             }
         }
         new_photo.saveImage(filename);
     }
-    else if(ask == "n" || ask == "N")
+    else if (ask == "n" || ask == "N")
     {
-        exit(EXIT_SUCCESS);
+        main();
     }
-    
-
+    else
+    {
+        cout << "ERROR! , try again" << endl;
+        cout << "=========================================================================\n";
+        main();
+    }
 }
-    
 int main()
 {
-    while (true)                   // make infinite loop to use the programm
+    while (true) // make infinite loop to use the programm
     {
         string chooce;
-        cout << "Do you want to use the application?"<<endl;
-        cout <<"[Y/N]: ";
+        cout << "Do you want to use the application?" << endl;
+        cout << "[Y/N]: ";
         cin >> chooce;
-        if(chooce == "Y" || chooce == "y" )
+        if (chooce == "Y" || chooce == "y")
         {
             string ask;
             string filterchooce;
             cout << "put your image name or path (with extension): ";
-            cin >> filename; // take filename of wanted picture 
+            cin >> filename;         // take filename of wanted picture
             Image picture(filename); // make variable to use the picture for type Image
             cout << "***we have lots of filters to applay***" << endl;
-            cout <<"=============================================================================\n";
-            cout << "A) Grayscale conversion                B) Black and white\n"<<endl;
-            cout << "C) Invert image                        D) Merge images\n"<<endl;
-            cout << "E) Flip image                          F) Rotat image\n"<<endl;
-            cout << "G) Darken or Lighten image             H) Crop images\n"<<endl;
-            cout << "I) Adding a frame to the picture       J) Detect image edges\n"<<endl;
-            cout << "K) Resizing images                     L) Blur images\n"<<endl;
-            cout <<"=============================================================================\n";
+            cout << "=============================================================================\n";
+            cout << "A) Grayscale conversion                B) Black and white\n"
+                 << endl;
+            cout << "C) Invert image                        D) Merge images\n"
+                 << endl;
+            cout << "E) Flip image                          F) Rotat image\n"
+                 << endl;
+            cout << "G) Darken or Lighten image             H) Crop images\n"
+                 << endl;
+            cout << "I) Adding a frame to the picture       J) Detect image edges\n"
+                 << endl;
+            cout << "K) Resizing images                     L) Blur images\n"
+                 << endl;
+            cout << "=============================================================================\n";
             cout << "chooce any one to apply: ";
             cin >> filterchooce;
-            if(filterchooce == "A" || filterchooce == "a" )
+            if (filterchooce == "A" || filterchooce == "a")
             {
                 cout << "do you want to save new image[Y/N]: ";
                 cin >> ask;
-                if(ask == "Y" || ask == "y")
+                if (ask == "Y" || ask == "y")
                 {
                     cout << "write your name of new image(don't forget extension): ";
                     cin >> filename;
-                    GrayscaleFilter(picture); // calll grayscale function 
-                    picture.saveImage(filename); //save new image with new file name
+                    GrayscaleFilter(picture);    // calll grayscale function
+                    picture.saveImage(filename); // save new image with new file name
                 }
-                else{
-                    exit(EXIT_SUCCESS);      //if user does not want to save changed exit the programm
+                else
+                {
+                    cout << "ERROR! , try again" << endl;
+                    cout << "=========================================================================\n";
+                    main(); // if user does not want to save changed recall the programm
                 }
-                
             }
-            else if(filterchooce == "B" || filterchooce == "b")
+            else if (filterchooce == "B" || filterchooce == "b")
             {
                 cout << "do you want to save new image[Y/N]: ";
                 cin >> ask;
-                if(ask == "Y" || ask == "y")
+                if (ask == "Y" || ask == "y")
                 {
                     cout << "write your name of new image(don't forget extension): ";
                     cin >> filename;
-                    GrayscaleFilter(picture); // convert first the picture to grayscale
+                    GrayscaleFilter(picture);       // convert first the picture to grayscale
                     black_and_whiteFilter(picture); // second convert it to black and white
-                    picture.saveImage(filename); // save image with new file name
-
+                    picture.saveImage(filename);    // save image with new file name
                 }
-                else{
-                    exit(EXIT_SUCCESS);
+                else if (ask == "N" || ask == "n")
+                {
+                    main();
+                }
+                else
+                {
+                    cout << "ERROR! , try again" << endl;
+                    cout << "=========================================================================\n";
+                    main();
                 }
             }
-            else if(filterchooce == "C" || filterchooce == "c")
+            else if (filterchooce == "C" || filterchooce == "c")
             {
                 cout << "do you want to save new image[Y/N]: ";
                 cin >> ask;
-                if(ask == "Y" || ask == "y")
+                if (ask == "Y" || ask == "y")
                 {
                     cout << "write your name of new image(don't forget extension): ";
                     cin >> filename;
-                    invert_image(picture); //call the function to convert colours 
-                    picture.saveImage(filename); //save new image with new filename
+                    invert_image(picture);       // call the function to convert colours
+                    picture.saveImage(filename); // save new image with new filename
                 }
-                else{
-                    exit(EXIT_SUCCESS);
+                else if (ask == "N" || ask == "n")
+                {
+                    main();
+                }
+                else
+                {
+                    cout << "ERROR! , try again" << endl;
+                    cout << "=========================================================================\n";
+                    main();
                 }
             }
-            else if(filterchooce == "D" || filterchooce == "d")
+            else if (filterchooce == "D" || filterchooce == "d")
             {
-                cout << "not completed yet!" <<endl;
-                exit(EXIT_SUCCESS);
+                cout << "not completed yet!" << endl;
+                cout << "==========================================================================\n";
+                main();
             }
-            else if(filterchooce == "E" || filterchooce == "e")
+            else if (filterchooce == "E" || filterchooce == "e")
             {
-                cout << "not completed yet!" <<endl;
-                exit(EXIT_SUCCESS);
-                 
+                string choice;
+                cout << "Enter what do want to do" << endl;
+                cout << "a)Horizontally    b) vertically" << endl;
+                cout << ": ";
+                cin >> choice;
+                if (choice == "a" || choice == "A")
+                {
+                    Flip_Horizontal(picture);
+                }
+                else if (choice == "b" || choice == "B")
+                {
+                    Flip_Vertical(picture);
+                }
+                else
+                {
+                    cout << "try again!";
+                    main();
+                }
+                cout << "Enter new photo name(with extension): ";
+                cin >> filename;
+                picture.saveImage(filename);
+                // cout << "not completed yet!" <<endl;
+                // main();
             }
-            else if(filterchooce == "F" || filterchooce == "f")
+            else if (filterchooce == "F" || filterchooce == "f")
             {
-                cout << "not completed yet!" <<endl;
-                exit(EXIT_SUCCESS);
-                
+                cout << "not completed yet!" << endl;
+                main();
             }
-            else if(filterchooce == "G" || filterchooce == "g")
+            else if (filterchooce == "G" || filterchooce == "g")
             {
                 cout << "do you want to save new image[Y/N]: ";
                 cin >> ask;
-                if(ask == "Y" || ask == "y")
+                if (ask == "Y" || ask == "y")
                 {
                     string ver;
-                    cout << "i)darken version         ii)lighten version " <<endl;
-                    cout <<": ";
+                    cout << "i)darken version         ii)lighten version " << endl;
+                    cout << ": ";
 
                     cin >> ver;
                     cout << "write your name of new image(don't forget extension): ";
                     cin >> filename;
-                    darken_lighten_filter(picture,ver);
+                    darken_lighten_filter(picture, ver);
                     picture.saveImage(filename);
                 }
-                else{
-                    exit(EXIT_SUCCESS);
+                else if (ask == "N" || ask == "n")
+                {
+                    main();
                 }
-               
+                else
+                {
+                    cout << "ERROR! , try again" << endl;
+                    cout << "=========================================================================\n";
+                    main();
+                }
             }
-            else if(filterchooce == "H" || filterchooce == "h")
+            else if (filterchooce == "H" || filterchooce == "h")
             {
-                cout << "not completed yet!" <<endl;
-                exit(EXIT_SUCCESS);
-                 
+                cout << "not completed yet!" << endl;
+                main();
             }
-            else if(filterchooce == "I" || filterchooce == "i")
+            else if (filterchooce == "I" || filterchooce == "i")
             {
-                cout << "not completed yet!" <<endl;
-                exit(EXIT_SUCCESS);
-                 
+                cout << "not completed yet!" << endl;
+                main();
             }
-            else if(filterchooce == "J" || filterchooce == "j")
+            else if (filterchooce == "J" || filterchooce == "j")
             {
-                cout << "not completed yet!" <<endl;
-                exit(EXIT_SUCCESS); 
+                cout << "not completed yet!" << endl;
+                main();
             }
-            else if(filterchooce == "K" || filterchooce == "k")
+            else if (filterchooce == "K" || filterchooce == "k")
             {
-<<<<<<< HEAD
                 cout << "do you want to save new image[Y/N]: ";
                 cin >> ask;
-                resizing(picture,ask);
-=======
-                int newWidth=0, newHeight=0;
-                cout << "write your name of new image(don't forget extension): ";
-                cin >> filename;
-                Image photo(filename);
-                cout << "Please enter the new width and height: ";
-                cin >> newWidth >> newHeight;
-                resizing(photo, newWidth, newHeight);
-                Image newImage(newWidth, newHeight);
-                newImage.saveImage(filename); 
->>>>>>> 7e4b587a3e50e87d19f4906bfa5f09cc17d0dbe7
-
+                resizing(picture, ask);
             }
-            else if(filterchooce == "L" || filterchooce == "l")
+            else if (filterchooce == "L" || filterchooce == "l")
             {
-                cout << "not completed yet!" <<endl;
-                exit(EXIT_SUCCESS); 
-                 
+                cout << "not completed yet!" << endl;
+                main();
             }
-            else{
-                cout << "Error.try again!" <<endl;
-                exit(EXIT_SUCCESS); 
+            else
+            {
+                cout << "ERROR! , try again" << endl;
+                cout << "=========================================================================\n";
+                main();
             }
         }
-        else if(chooce == "N" || chooce == "n")
+        else if (chooce == "N" || chooce == "n")
         {
             cout << "***GODE BYE***";
             exit(EXIT_SUCCESS);
         }
     }
-    
-    
 }
