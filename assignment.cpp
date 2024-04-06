@@ -26,6 +26,28 @@ using namespace std;
 string filename;
 int main();
 
+void edgedetictiveFilter(Image &picture)
+{
+    int value = 10;
+    for (int i = 0; i < picture.width; i++)
+    {
+        for (int j = 0; j < picture.height; j++)
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                if (abs(picture(i, j, k) - picture(i + 1, j, k)) > value && abs(picture(i, j, k) - picture(i, j + 1, k)) > value)
+                {
+                    picture(i, j, k) = 0;
+                }
+                else
+                {
+                    picture(i, j, k) = 255;
+                }
+            }
+        }
+    }
+}
+
 void Flip_Horizontal(Image &photo)
 {
     int width = photo.width;
@@ -391,8 +413,28 @@ int main()
             }
             else if (filterchooce == "J" || filterchooce == "j")
             {
-                cout << "not completed yet!" << endl;
-                main();
+                cout << "do you want to save new image[Y/N]: ";
+                cin >> ask;
+                if (ask == "Y" || ask == "y")
+                {
+                    GrayscaleFilter(picture);
+                    edgedetictiveFilter(picture);
+                    cout << "Enter new photo name(with extension): ";
+                    cin >> filename;
+                    picture.saveImage(filename);
+                }
+                else if (ask == "N" || ask == "n")
+                {
+                    main();
+                }
+                else
+                {
+                    cout << "ERROR! , try again" << endl;
+                    cout << "=========================================================================\n";
+                    main();
+                }
+                // cout << "not completed yet!" << endl;
+                // main();
             }
             else if (filterchooce == "K" || filterchooce == "k")
             {
