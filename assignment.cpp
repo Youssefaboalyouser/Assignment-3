@@ -1,4 +1,4 @@
-// ===============================================================================================================
+// ================================================================================================================
 // part 1 (5 filters + menu)
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -14,7 +14,7 @@
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-// *** third member name: Mohamed Youssef Ishaq Abdel Hafeez
+// *** first member name: Mohamed Youssef Ishaq Abdel Hafeez
 // ID: 20230790
 // work on: invert image filter , menu ***
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -22,9 +22,109 @@
 // ================================================================================================================
 #include "Image_Class.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 string filename;
 int main();
+
+void cropimage(Image &picture)
+{
+    string ask;
+    cout << "do you want to save new image[Y/N]: ";
+    cin >> ask;
+    if (ask == "Y" || ask == "y")
+    {
+        cout << "write your name of new image(don't forget extension): ";
+        cin >> filename;
+        int X_Coordinate, Y_Coordinate, New_Width, New_Height;
+        // Ask the user for the cropping parameters
+        cout << "Enter the X coordinate for the crop starting point: ";
+        cin >> X_Coordinate;
+        cout << "Enter the Y coordinate for the crop starting point: ";
+        cin >> Y_Coordinate;
+        cout << "Enter the width of the crop area: ";
+        cin >> New_Width;
+        cout << "Enter the height of the crop area: ";
+        cin >> New_Height;
+
+        // Check if the provided dimensions are valid
+        if (X_Coordinate < 0 || Y_Coordinate < 0 || X_Coordinate + New_Width > picture.width || Y_Coordinate + New_Height > picture.height)
+        {
+            cout << "The provided dimensions are out of the image bounds." << endl;
+            main();
+        }
+        // Create a new image object for the cropped area
+        Image cropped_Image(New_Width, New_Height);
+
+        // Copy the pixel data from the original image to the cropped image
+        for (int j = 0; j < New_Height; ++j)
+        {
+            for (int i = 0; i < New_Width; ++i)
+            {
+                // Calculate the position in the original image
+                int original_X = X_Coordinate + i;
+                int original_Y = Y_Coordinate + j;
+
+                // Copy each color channel
+                for (int c = 0; c < 3; ++c)
+                { // Assuming there are 3 color channels (RGB)
+                    cropped_Image.imageData[(j * New_Width + i) * 3 + c] =
+                        picture.imageData[(original_Y * picture.width + original_X) * 3 + c];
+                }
+            }
+        }
+        // Save the cropped image
+        cropped_Image.saveImage(filename);
+    }
+    else if (ask == "N" || ask == "n")
+        main();
+
+    else
+    {
+        cout << "ERROR! , try again" << endl;
+        cout << "=========================================================================\n";
+        main();
+    }
+}
+
+void blurfilter(Image &picture) // not right
+{
+    string ask;
+    cout << "do you want to save new image[Y/N]: ";
+    cin >> ask;
+    if (ask == "Y" || ask == "y")
+    {
+        cout << "write your name of new image(don't forget extension): ";
+        cin >> filename;
+        int kernalarea = 9;
+        for (int i = 0; i < picture.width; i++)
+        {
+            for (int j = 0; j < picture.height; j++)
+            {
+                int sum = 0;
+                for (int k = 0; k < 3; k++)
+                {
+                    sum += picture(i, j, k);
+                }
+                picture(i, j, 0) += sum / kernalarea;
+                picture(i, j, 1) += sum / kernalarea;
+                picture(i, j, 2) += sum / kernalarea;
+            }
+        }
+    }
+    else if (ask == "N" || ask == "n")
+    {
+        main();
+    }
+    else
+    {
+        cout << "ERROR! , try again" << endl;
+        cout << "=========================================================================\n";
+        main();
+    }
+    picture.saveImage(filename);
+}
+
 void mergetowpic(Image &picture1, Image &picture2)
 {
 
@@ -35,7 +135,7 @@ void mergetowpic(Image &picture1, Image &picture2)
     {
         cout << "write your name of new image(don't forget extension): ";
         cin >> filename;
-        int new_width = 1024;
+        int new_width = 2048;
         int new_hight = 1024;
         Image new_picture1(new_width, new_hight);
         Image new_picture2(new_width, new_hight);
@@ -478,8 +578,7 @@ int main()
             }
             else if (filterchooce == "H" || filterchooce == "h")
             {
-                cout << "not completed yet!" << endl;
-                main();
+                cropimage(picture);
             }
             else if (filterchooce == "I" || filterchooce == "i")
             {
@@ -508,8 +607,6 @@ int main()
                     cout << "=========================================================================\n";
                     main();
                 }
-                // cout << "not completed yet!" << endl;
-                // main();
             }
             else if (filterchooce == "K" || filterchooce == "k")
             {
@@ -519,8 +616,11 @@ int main()
             }
             else if (filterchooce == "L" || filterchooce == "l")
             {
-                cout << "not completed yet!" << endl;
-                main();
+
+                blurfilter(picture);
+
+                // cout << "not completed yet!" << endl;
+                // main();
             }
             else
             {
