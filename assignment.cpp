@@ -1,23 +1,24 @@
 // ================================================================================================================
-// part 1 (5 filters + menu)
+// part 2 (12 filters + menu)
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // *** first member name: Youssef Aboalyouser Afeed Ibrahem
 // ID: 20230475
-// work on: darken and lighten filter , Grayscale filter ***
+// work on: darken and lighten raysfilter , Gcale filter , edge detective filter , merge image filter, menu ***
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // *** second member name: Ahemd Mahmoud Ibrahim Mahmoud
 // ID: 20230650
-// work on: black and white filter , resizing image filter ***
+// work on: black and white filter , resizing image filter , crop image filter , flip image filter ***
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-// *** first member name: Mohamed Youssef Ishaq Abdel Hafeez
+// *** third member name: Mohamed Youssef Ishaq Abdel Hafeez
 // ID: 20230790
-// work on: invert image filter , menu ***
+// work on: invert image filter , frame filter , rotat filter , bulr filter ***
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+// GITHUB LINK: https://github.com/Youssefaboalyouser/Assignment-3
 
 // ================================================================================================================
 #include "Image_Class.h"
@@ -26,6 +27,190 @@
 using namespace std;
 string filename;
 int main();
+
+void rotateImage(Image &Image1, Image &Image2, int angle)
+{
+    string ask;
+    cout << "do you want to save new image[Y/N]: ";
+    cin >> ask;
+    if (ask == "Y" || ask == "y")
+    {
+        cout << "write your name of new image(don't forget extension): ";
+        cin >> filename;
+        int width = Image1.width;
+        int height = Image1.height;
+
+        if (angle == 90)
+        {
+            Image2 = Image(height, width);
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    int newX = height - 1 - y;
+                    int newY = x;
+                    for (int c = 0; c < Image1.channels; ++c)
+                    {
+                        Image2(newX, newY, c) = Image1(x, y, c);
+                    }
+                }
+            }
+        }
+        else if (angle == 180)
+        {
+            Image2 = Image(width, height);
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    int newX = width - 1 - x;
+                    int newY = height - 1 - y;
+                    for (int c = 0; c < Image1.channels; ++c)
+                    {
+                        Image2(newX, newY, c) = Image1(x, y, c);
+                    }
+                }
+            }
+        }
+        else if (angle == 270)
+        {
+            Image2 = Image(height, width);
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    int newX = y;
+                    int newY = width - 1 - x;
+                    for (int c = 0; c < Image1.channels; ++c)
+                    {
+                        if (newX < Image2.height && newY < Image2.width)
+                        {
+                            Image2(newX, newY, c) = Image1(x, y, c);
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            throw invalid_argument("Invalid rotation angle. Valid angles are 90, 180, or 270 degrees.");
+        }
+    }
+    else if (ask == "N" || ask == "n")
+        main();
+    else
+    {
+    }
+}
+void applyBoxBlur(Image &picture)
+{
+    string ask;
+    cout << "do you want to save new image[Y/N]: ";
+    cin >> ask;
+    if (ask == "y" || ask == "Y")
+    {
+        cout << "write your name of new image(don't forget extension): ";
+        cin >> filename;
+        int blurRadius = 3;
+        Image picture2(picture.width, picture.height);
+        for (int y = 0; y < picture.height; ++y)
+        {
+            for (int x = 0; x < picture.width; ++x)
+            {
+                int red = 0;
+                int green = 0;
+                int blue = 0;
+
+                for (int dy = -blurRadius; dy <= blurRadius; ++dy)
+                {
+                    for (int dx = -blurRadius; dx <= blurRadius; ++dx)
+                    {
+                        int nx = x + dx;
+                        int ny = y + dy;
+
+                        if (nx >= 0 && nx < picture.width && ny >= 0 && ny < picture.height)
+                        {
+                            red += picture(nx, ny, 0);
+                            green += picture(nx, ny, 1);
+                            blue += picture(nx, ny, 2);
+                        }
+                    }
+                }
+
+                int numPixels = (2 * blurRadius + 1) * (2 * blurRadius + 1);
+                unsigned char avgRed = red / numPixels;
+                unsigned char avgGreen = green / numPixels;
+                unsigned char avgBlue = blue / numPixels;
+
+                picture2(x, y, 0) = avgRed;
+                picture2(x, y, 1) = avgGreen;
+                picture2(x, y, 2) = avgBlue;
+            }
+        }
+        picture2.saveImage(filename);
+    }
+    else if (ask == "N" || ask == "n")
+        main();
+    else
+    {
+        cout << "ERROR! , try again" << endl;
+        cout << "=========================================================================\n";
+        main();
+    }
+}
+
+void addFrame(Image &Image1, Image &Image2, unsigned char frameColor[3], int frameThickness)
+{
+    string ask;
+    cout << "do you want to save new image[Y/N]: ";
+    cin >> ask;
+    if (ask == "Y" || ask == "y")
+    {
+        cout << "write your name of new image(don't forget extension): ";
+        cin >> filename;
+        int width = Image1.width;
+        int height = Image1.height;
+
+        int newWidth = width + 2 * frameThickness;
+        int newHeight = height + 2 * frameThickness;
+
+        Image2 = Image(newWidth, newHeight);
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                for (int c = 0; c < Image1.channels; ++c)
+                {
+                    Image2(x + frameThickness, y + frameThickness, c) = Image1(x, y, c);
+                }
+            }
+        }
+
+        for (int y = 0; y < newHeight; ++y)
+        {
+            for (int x = 0; x < newWidth; ++x)
+            {
+                if (x < frameThickness || x >= newWidth - frameThickness ||
+                    y < frameThickness || y >= newHeight - frameThickness)
+                {
+                    for (int c = 0; c < Image1.channels; ++c)
+                    {
+                        Image2(x, y, c) = frameColor[c];
+                    }
+                }
+            }
+        }
+        Image2.saveImage(filename);
+    }
+    else if (ask == "N" || ask == "n")
+        main();
+    else
+    {
+        cout << "ERROR! , try again" << endl;
+        cout << "=========================================================================\n";
+        main();
+    }
+}
 
 void cropimage(Image &picture)
 {
@@ -87,44 +272,6 @@ void cropimage(Image &picture)
     }
 }
 
-void blurfilter(Image &picture) // not right
-{
-    string ask;
-    cout << "do you want to save new image[Y/N]: ";
-    cin >> ask;
-    if (ask == "Y" || ask == "y")
-    {
-        cout << "write your name of new image(don't forget extension): ";
-        cin >> filename;
-        int kernalarea = 9;
-        for (int i = 0; i < picture.width; i++)
-        {
-            for (int j = 0; j < picture.height; j++)
-            {
-                int sum = 0;
-                for (int k = 0; k < 3; k++)
-                {
-                    sum += picture(i, j, k);
-                }
-                picture(i, j, 0) += sum / kernalarea;
-                picture(i, j, 1) += sum / kernalarea;
-                picture(i, j, 2) += sum / kernalarea;
-            }
-        }
-    }
-    else if (ask == "N" || ask == "n")
-    {
-        main();
-    }
-    else
-    {
-        cout << "ERROR! , try again" << endl;
-        cout << "=========================================================================\n";
-        main();
-    }
-    picture.saveImage(filename);
-}
-
 void mergetowpic(Image &picture1, Image &picture2)
 {
 
@@ -135,8 +282,10 @@ void mergetowpic(Image &picture1, Image &picture2)
     {
         cout << "write your name of new image(don't forget extension): ";
         cin >> filename;
+        // must all control picture dimention
         int new_width = 2048;
         int new_hight = 1024;
+        // resize the tow image that want to merge together to be same dimention
         Image new_picture1(new_width, new_hight);
         Image new_picture2(new_width, new_hight);
         Image final_photo(new_width, new_hight);
@@ -198,20 +347,22 @@ void mergetowpic(Image &picture1, Image &picture2)
 
 void edgedetictiveFilter(Image &picture)
 {
-    int value = 10;
+    int value = 10; // that value use to compare the different in values of our pixel's nighbours
     for (int i = 0; i < picture.width; i++)
     {
         for (int j = 0; j < picture.height; j++)
         {
             for (int k = 0; k < 3; k++)
             {
+                // use abs() to find the +ve vlaue only
                 if (abs(picture(i, j, k) - picture(i + 1, j, k)) > value && abs(picture(i, j, k) - picture(i, j + 1, k)) > value)
                 {
-                    picture(i, j, k) = 0;
+                    picture(i, j, k) = 0; // that meant there is huge different between values of 2 pixels so we made
+                    // it as black
                 }
                 else
                 {
-                    picture(i, j, k) = 255;
+                    picture(i, j, k) = 255; // made it white
                 }
             }
         }
@@ -514,9 +665,6 @@ int main()
                 Image picture2(filename);
 
                 mergetowpic(picture, picture2);
-                // cout << "not completed yet!" << endl;
-                // cout << "==========================================================================\n";
-                // main();
             }
             else if (filterchooce == "E" || filterchooce == "e")
             {
@@ -541,13 +689,14 @@ int main()
                 cout << "Enter new photo name(with extension): ";
                 cin >> filename;
                 picture.saveImage(filename);
-                // cout << "not completed yet!" <<endl;
-                // main();
             }
             else if (filterchooce == "F" || filterchooce == "f")
             {
-                cout << "not completed yet!" << endl;
-                main();
+                cout << "Enter rotation angle (90, 180, or 270 degrees): ";
+                int angle;
+                cin >> angle;
+                Image Image2;
+                rotateImage(picture, Image2, angle);
             }
             else if (filterchooce == "G" || filterchooce == "g")
             {
@@ -582,8 +731,10 @@ int main()
             }
             else if (filterchooce == "I" || filterchooce == "i")
             {
-                cout << "not completed yet!" << endl;
-                main();
+                unsigned char frameColor[3] = {255, 0, 0};
+                int frameThickness = 20;
+                Image Image2;
+                addFrame(picture, Image2, frameColor, frameThickness);
             }
             else if (filterchooce == "J" || filterchooce == "j")
             {
@@ -617,7 +768,7 @@ int main()
             else if (filterchooce == "L" || filterchooce == "l")
             {
 
-                blurfilter(picture);
+                applyBoxBlur(picture);
 
                 // cout << "not completed yet!" << endl;
                 // main();
